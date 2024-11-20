@@ -1,10 +1,11 @@
 const baseUrl = "https://v2.api.noroff.dev";
-const registerUrl = baseUrl + "/auth/register";
-const loginUrl = baseUrl + "/auth/login";
-const allListings = baseUrl + "/auction/listings";
-let singleId = "";
-const singleListing = allListings + "/" + singleId;
-const createListing = baseUrl + "/auction/listings"; //POST
-const allProfiles = baseUrl + "/auction/profiles";
-let name = "";
-const singleProfile = allProfiles + "/" + name;
+const authBase = `${baseUrl}/auth`;
+const auctionBase = `${baseUrl}/auction`;
+
+const registerUrl = `${authBase}/register`;
+const loginUrl = `${authBase}/login`;
+const allListings = `${auctionBase}/listings`;
+const singleListing = (singleId) => `${allListings}/${singleId}`;
+const createListing = allListings; // POST
+const allProfiles = `${auctionBase}/profiles`;
+const singleProfile = (name) => `${allProfiles}/${name}`;
