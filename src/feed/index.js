@@ -21,7 +21,10 @@ async function displayData() {
         return;
     }
 
+    container.innerHTML = "";
+
     posts.forEach((post) => {
+        const postId = post.id;
         const media = post.media[0];
         const postImg =
             media && media.url
@@ -43,28 +46,38 @@ async function displayData() {
         }
 
         container.innerHTML += `
- <div class="bg-white shadow-lg rounded-lg border border-gray-200 overflow-hidden">
-            ${postImg}
-            <div class="p-4">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">${
-                    post.title
-                }</h2>
-                <p class="text-gray-600 mb-4">${post.description}</p>
-                <p class="text-gray-700 font-medium mb-2">Bids: <span class="font-semibold">${
-                    post._count.bids
-                }</span></p>
-                <p class="text-gray-500 text-sm mb-1">Started at: <span class="font-medium">${formatTimestamp(
-                    post.created
-                )}</span></p>
-                <p class="text-gray-500 text-sm mb-4">Ends at: <span class="font-medium">${formatTimestamp(
-                    post.endsAt
-                )}</span></p>
-                <div class="text-gray-600 text-sm">Tags: <span class="font-semibold">${
-                    post.tags.filter((tag) => tag).join(", ") || "No tags"
-                }</span></div>
+            <div class="bg-white shadow-lg rounded-lg border border-gray-200 overflow-hidden cursor-pointer" data-id="${
+                post.id
+            }">
+                ${postImg}
+                <div class="p-4">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">${
+                        post.title
+                    }</h2>
+                    <p class="text-gray-600 mb-4">${post.description}</p>
+                    <p class="text-gray-700 font-medium mb-2">Bids: <span class="font-semibold">${
+                        post._count.bids
+                    }</span></p>
+                    <p class="text-gray-500 text-sm mb-1">Started at: <span class="font-medium">${formatTimestamp(
+                        post.created
+                    )}</span></p>
+                    <p class="text-gray-500 text-sm mb-4">Ends at: <span class="font-medium">${formatTimestamp(
+                        post.endsAt
+                    )}</span></p>
+                    <div class="text-gray-600 text-sm">Tags: <span class="font-semibold">${
+                        post.tags.filter((tag) => tag).join(", ") || "No tags"
+                    }</span></div>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    });
+
+    document.querySelectorAll("[data-id]").forEach((postElement) => {
+        postElement.addEventListener("click", function () {
+            const postId = this.getAttribute("data-id");
+            sessionStorage.setItem("postId", postId);
+            window.location.href = "";
+        });
     });
 }
 
