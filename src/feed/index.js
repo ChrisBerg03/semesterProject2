@@ -24,7 +24,6 @@ async function displayData() {
     container.innerHTML = "";
 
     posts.forEach((post) => {
-        const postId = post.id;
         const media = post.media[0];
         const postImg =
             media && media.url
@@ -76,7 +75,7 @@ async function displayData() {
         postElement.addEventListener("click", function () {
             const postId = this.getAttribute("data-id");
             sessionStorage.setItem("postId", postId);
-            window.location.href = "";
+            window.location.href = "post/";
         });
     });
 }

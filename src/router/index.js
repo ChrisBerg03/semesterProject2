@@ -3,11 +3,11 @@ export default async function router(pathname = window.location.pathname) {
         case "/":
             await import("../feed/index.js");
             break;
-        // case "/auth/":
-        //     await import("");
-        //     break;
+        case "/post/":
+            await import("../router/singlePost.js");
+            break;
         default:
-            await import("../notFound/index.html");
+            console.warn("page was not found" + pathname);
             break;
     }
 }

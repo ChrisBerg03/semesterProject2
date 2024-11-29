@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="/src/app.js" type="module" defer></script>
+    </head>
+    <body class="w-full h-full flex justify-center items-center">
+        <div id="container"></div>
+
+        <div
+            id="imageModal"
+            class="hidden fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-75 flex items-center justify-center"
+        >
+            <div class="relative flex justify-center items-center">
+                <div class="relative flex flex-row justify-center max-w-[70%]">
+                    <button
+                        id="closeModal"
+                        class="absolute top-0 right-0 text-white text-3xl z-10 bg-opacity-50"
+                    >
+                        &times;
+                    </button>
+                    <img
+                        id="modalImage"
+                        src=""
+                        alt="Enlarged image"
+                        class="max-h-[70%] object-contain"
+                    />
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

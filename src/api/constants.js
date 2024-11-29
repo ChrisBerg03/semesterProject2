@@ -10,7 +10,7 @@ export const loginUrl = `${authBase}/login`;
 
 export const allListings = `${auctionBase}/listings`;
 
-export const singleListing = (singleId) => `${allListings}/${singleId}`;
+export const singleListing = `${allListings}/`;
 
 export const createListing = allListings; // POST
 
