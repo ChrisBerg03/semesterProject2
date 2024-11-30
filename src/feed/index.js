@@ -1,8 +1,17 @@
 import { allListings } from "../api/constants";
+import { navHeader } from "../ui/header";
+navHeader();
+document.getElementById("profileImg").src =
+    localStorage.getItem("avatar") ||
+    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541";
+
+if (localStorage.getItem("accessToken")) {
+    document.getElementById("login-button-container").classList.add("hidden");
+}
 
 async function getData() {
     try {
-        const response = await fetch(allListings);
+        const response = await fetch(allListings + "?_bids=true&_active=true");
         const data = await response.json();
         return data.data;
     } catch (error) {
@@ -44,6 +53,22 @@ async function displayData() {
             return `${hours}:${minutes}, ${day}-${month}-${year}`;
         }
 
+        let highestBidInfo = `<p class="text-gray-700">No bids yet.</p>`;
+        if (post.bids.length > 0) {
+            const highestBid = post.bids.reduce(
+                (max, bid) => (bid.amount > max.amount ? bid : max),
+                post.bids[0]
+            );
+            highestBidInfo = `
+                <p class="text-gray-700 font-medium mb-2">
+                    Highest Bidder: <span class="font-semibold">${highestBid.bidder.name}</span>
+                </p>
+                <p class="text-gray-700 font-medium mb-2">
+                    Current bid: <span class="font-semibold">${highestBid.amount}kr</span>
+                </p>
+            `;
+        }
+
         container.innerHTML += `
             <div class="bg-white shadow-lg rounded-lg border border-gray-200 overflow-hidden cursor-pointer" data-id="${
                 post.id
@@ -56,7 +81,8 @@ async function displayData() {
                     <p class="text-gray-600 mb-4">${post.description}</p>
                     <p class="text-gray-700 font-medium mb-2">Bids: <span class="font-semibold">${
                         post._count.bids
-                    }</span></p>
+                    }</span><br/></p>
+                    ${highestBidInfo}
                     <p class="text-gray-500 text-sm mb-1">Started at: <span class="font-medium">${formatTimestamp(
                         post.created
                     )}</span></p>
