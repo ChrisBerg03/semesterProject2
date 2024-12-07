@@ -65,7 +65,7 @@ async function displayPost() {
         }
 
         const timerInterval = setInterval(updateTimer, 1000);
-        updateTimer(); // Run it immediately
+        updateTimer();
     }
 
     const images = post.media.map((item) => item.url);
