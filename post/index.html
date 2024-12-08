@@ -3,11 +3,11 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <title>Single Post Page</title>
         <script src="/src/app.js" type="module" defer></script>
     </head>
     <body class="w-dvw h-dvh overflow-x-hidden">
-        <nav class="bg-gray-800 mb-12">
+        <nav class="bg-gray-800">
             <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div class="relative flex h-16 items-center justify-between">
                     <div
@@ -53,6 +53,7 @@
                             </svg>
                         </button>
                     </div>
+
                     <div
                         class="flex items-center justify-center sm:items-stretch sm:justify-start"
                     >
@@ -91,6 +92,7 @@
                                     />
                                 </button>
                             </div>
+
                             <div
                                 class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden"
                                 role="menu"
@@ -107,7 +109,7 @@
                                     >Profile</a
                                 >
                                 <a
-                                    href="#"
+                                    href="/"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-300"
                                     role="menuitem"
                                     tabindex="-1"
@@ -116,15 +118,24 @@
                                 >
                             </div>
                         </div>
+                        <div class="relative ml-3" id="login-button-container">
+                            <a
+                                href="/auth/"
+                                class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 duration-500 transition-all"
+                                >Login</a
+                            >
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Mobile menu, show/hide based on menu state. -->
             <div class="sm:hidden hidden" id="mobile-menu">
-                <div class="space-y-1 px-2 pb-3 pt-2 flex justify-center">
+                <div class="space-y-1 px-2 pb-3 pt-2">
+                    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                     <a
                         href="/"
-                        class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white w-[90%]"
+                        class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
                         aria-current="page"
                         >Home</a
                     >

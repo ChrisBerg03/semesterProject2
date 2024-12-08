@@ -1,10 +1,7 @@
 import { singleListing } from "../api/constants";
-import { navHeader } from "../ui/header";
+import { navHeader } from "./header";
+import { loggedIn } from "../api/headers";
 navHeader();
-
-document.getElementById("profileImg").src =
-    localStorage.getItem("avatar") ||
-    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541";
 
 const postId = sessionStorage.getItem("postId");
 const container = document.getElementById("container");
@@ -84,10 +81,23 @@ async function displayPost() {
     let bidContainer = "";
     if (localStorage.getItem("accessToken")) {
         bidContainer = `
-            <div class="mt-4">
-                <a href="../../bid/" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">Place Bid</a>
+        <div class="mt-4">
+            <button id="openBidInput" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+                Place Bid
+            </button>
+            <div id="bidInputContainer" class="hidden mt-2">
+                <input
+                    type="number"
+                    id="bidAmount"
+                    placeholder="Enter your bid amount"
+                    class="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                />
+                <button id="submitBid" class="mt-2 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200">
+                    Submit Bid
+                </button>
             </div>
-        `;
+        </div>
+    `;
     }
     let highestBidInfo = `<p class="text-gray-700">No bids yet.</p>`;
     if (post.bids.length > 0) {
@@ -153,6 +163,50 @@ async function displayPost() {
         </div>
         ${bidContainer}
     `;
+
+    document.getElementById("openBidInput").addEventListener("click", () => {
+        const bidInputContainer = document.getElementById("bidInputContainer");
+        bidInputContainer.classList.toggle("hidden");
+    });
+
+    document.getElementById("submitBid").addEventListener("click", async () => {
+        const bidAmount = document.getElementById("bidAmount").value;
+        if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
+            alert("Please enter a valid bid amount.");
+            return;
+        }
+
+        const requestBody = JSON.stringify({
+            amount: parseFloat(bidAmount),
+        });
+
+        const myHeaders = await loggedIn();
+
+        try {
+            const response = await fetch(`${singleListing + postId}/bids`, {
+                method: "POST",
+                headers: myHeaders,
+                body: requestBody,
+            });
+
+            if (response.ok) {
+                alert("Bid placed successfully!");
+                document
+                    .getElementById("bidInputContainer")
+                    .classList.add("hidden");
+                document.getElementById("bidAmount").value = "";
+                displayPost(); // Refresh the post to show the new bid
+            } else {
+                const error = await response.json();
+                alert(`Failed to place bid: ${error.message}`);
+            }
+        } catch (error) {
+            console.error("Error placing bid:", error);
+            alert(
+                "An error occurred while placing the bid. Please try again later."
+            );
+        }
+    });
 
     const timerElement = document.getElementById(`timer-${post.id}`);
     createTimer(post.endsAt, timerElement);

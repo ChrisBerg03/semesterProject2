@@ -1,4 +1,12 @@
 export function navHeader() {
+    document.getElementById("profileImg").src =
+        localStorage.getItem("avatar") ||
+        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541";
+    if (localStorage.getItem("accessToken")) {
+        document
+            .getElementById("login-button-container")
+            .classList.add("hidden");
+    }
     const userMenuButton = document.getElementById("user-menu-button");
     const userMenu = document.querySelector(
         '[aria-labelledby="user-menu-button"]'
