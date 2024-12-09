@@ -9,8 +9,8 @@ export default async function router(pathname = window.location.pathname) {
         case "/auth/":
             await import("../ui/auth.js");
             break;
-        case "/bid/":
-            await import("../ui/bid.js");
+        case "/create/":
+            await import("../ui/create.js");
             break;
         case "/profile/":
             await import("../ui/profile.js");

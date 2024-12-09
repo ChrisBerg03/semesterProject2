@@ -13,6 +13,10 @@ toggleFormBtn.addEventListener("click", () => {
         ? "Switch to Login"
         : "Switch to Register";
 });
+const validNoroffEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@stud\.noroff\.no$/;
+    return emailRegex.test(email);
+};
 
 registerForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -24,6 +28,12 @@ registerForm.addEventListener("submit", (event) => {
     const avatarUrl = document.getElementById("avatarUrl").value;
     const bannerUrl = document.getElementById("bannerUrl").value;
 
+    // Validate email
+    if (!validNoroffEmail(email)) {
+        alert("Email must end with @stud.noroff.no");
+        return;
+    }
+
     const registrationData = {
         name: name,
         email: email,
@@ -33,9 +43,6 @@ registerForm.addEventListener("submit", (event) => {
         banner: bannerUrl ? { url: bannerUrl || "" } : undefined,
     };
 
-    console.log("Registration Data:", registrationData);
-
-    // Send registration data to the server
     fetch(registerUrl, {
         method: "POST",
         headers: {
@@ -55,6 +62,11 @@ loginForm.addEventListener("submit", (event) => {
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+
+    if (!validNoroffEmail(email)) {
+        alert("Email must end with @stud.noroff.no");
+        return;
+    }
 
     const loginData = {
         email: email,

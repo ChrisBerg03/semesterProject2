@@ -19,7 +19,6 @@ async function getData() {
 
 async function displayPost() {
     const post = await getData();
-    console.log(post);
     if (!post || !post.media || !post.media.length) {
         console.error("No media found in the post.");
         return;
@@ -195,7 +194,7 @@ async function displayPost() {
                     .getElementById("bidInputContainer")
                     .classList.add("hidden");
                 document.getElementById("bidAmount").value = "";
-                displayPost(); // Refresh the post to show the new bid
+                displayPost();
             } else {
                 const error = await response.json();
                 alert(`Failed to place bid: ${error.message}`);
