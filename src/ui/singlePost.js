@@ -98,6 +98,7 @@ async function displayPost() {
         </div>
     `;
     }
+
     let highestBidInfo = `<p class="text-gray-700">No bids yet.</p>`;
     if (post.bids.length > 0) {
         const highestBid = post.bids.reduce(
@@ -113,6 +114,14 @@ async function displayPost() {
             </p>
         `;
     }
+
+    const allBidsHtml = `
+        <button id="viewAllBids" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 mt-4">
+            View All Bids
+        </button>
+        <div id="allBidsContainer" class="hidden mt-4 bg-gray-100 p-4 rounded-lg">
+        </div>
+    `;
 
     container.innerHTML = `
         <div class="flex items-center justify-center space-x-4">
@@ -151,99 +160,62 @@ async function displayPost() {
                     post._count?.bids || 0
                 }</div>
                         ${highestBidInfo}
-
-                
             </div>
             <div>
                 <p class="text-sm sm:text-base md:text-lg">${
                     post.description || "No description available"
                 }</p>
             </div>
+            ${allBidsHtml}
         </div>
         ${bidContainer}
+
     `;
 
-    document.getElementById("openBidInput").addEventListener("click", () => {
+    document.getElementById("openBidInput")?.addEventListener("click", () => {
         const bidInputContainer = document.getElementById("bidInputContainer");
         bidInputContainer.classList.toggle("hidden");
     });
 
-    document.getElementById("submitBid").addEventListener("click", async () => {
-        const bidAmount = document.getElementById("bidAmount").value;
-        if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
-            alert("Please enter a valid bid amount.");
-            return;
-        }
-
-        const requestBody = JSON.stringify({
-            amount: parseFloat(bidAmount),
-        });
-
-        const myHeaders = await loggedIn();
-
-        try {
-            const response = await fetch(`${singleListing + postId}/bids`, {
-                method: "POST",
-                headers: myHeaders,
-                body: requestBody,
-            });
-
-            if (response.ok) {
-                alert("Bid placed successfully!");
-                document
-                    .getElementById("bidInputContainer")
-                    .classList.add("hidden");
-                document.getElementById("bidAmount").value = "";
-                displayPost();
-            } else {
-                const error = await response.json();
-                alert(`Failed to place bid: ${error.message}`);
-            }
-        } catch (error) {
-            console.error("Error placing bid:", error);
-            alert(
-                "An error occurred while placing the bid. Please try again later."
-            );
+    document.getElementById("viewAllBids")?.addEventListener("click", () => {
+        const allBidsContainer = document.getElementById("allBidsContainer");
+        if (allBidsContainer.classList.contains("hidden")) {
+            const bidsHtml = post.bids
+                .map(
+                    (bid) => `
+                        <div class="border-b border-gray-300 py-2">
+                            <p><span class="font-semibold">Bidder:</span> ${
+                                bid.bidder.name
+                            }</p>
+                            <p><span class="font-semibold">Amount:</span> ${
+                                bid.amount
+                            }kr</p>
+                            <p><span class="font-semibold">Time:</span> ${formatTimestamp(
+                                bid.created
+                            )}</p>
+                        </div>
+                    `
+                )
+                .join("");
+            allBidsContainer.innerHTML = bidsHtml || "<p>No bids yet.</p>";
+            allBidsContainer.classList.remove("hidden");
+        } else {
+            allBidsContainer.classList.add("hidden");
         }
     });
 
-    const timerElement = document.getElementById(`timer-${post.id}`);
-    createTimer(post.endsAt, timerElement);
+    createTimer(post.endsAt, document.getElementById(`timer-${post.id}`));
+    updateImage();
 
-    document.getElementById("left-button").addEventListener("click", () => {
+    container.querySelector("#left-button").addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
         updateImage();
     });
 
-    document.getElementById("right-button").addEventListener("click", () => {
+    container.querySelector("#right-button").addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % images.length;
         updateImage();
     });
-
-    updateImage();
 }
 
 displayPost();
-
-function openModal(imageUrl) {
-    const modal = document.getElementById("imageModal");
-    const modalImage = document.getElementById("modalImage");
-    modalImage.src = imageUrl;
-    modal.classList.remove("hidden");
-}
-
-// Attach openModal to the window object
-window.openModal = openModal;
-
-document.getElementById("closeModal").addEventListener("click", () => {
-    const modal = document.getElementById("imageModal");
-    modal.classList.add("hidden");
-});
-
-// Close modal when clicking outside the image
-document.getElementById("imageModal").addEventListener("click", (event) => {
-    if (event.target === document.getElementById("imageModal")) {
-        const modal = document.getElementById("imageModal");
-        modal.classList.add("hidden");
-    }
-});

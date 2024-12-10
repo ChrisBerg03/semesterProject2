@@ -12,8 +12,6 @@ export const loginUrl = `${authBase}/login`;
 
 export const allListings = `${auctionBase}/listings`;
 
-export const activeListings = `${allListings}?_active=true`;
-
 export const singleListing = `${allListings}/`;
 
 export const createListing = allListings; // POST
