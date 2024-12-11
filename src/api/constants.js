@@ -1,3 +1,5 @@
+export const API_KEY = "9e15b2ca-a812-4a82-a9bf-21ab50759427";
+
 export const baseUrl = "https://v2.api.noroff.dev";
 
 export const authBase = `${baseUrl}/auth`;
@@ -10,12 +12,8 @@ export const loginUrl = `${authBase}/login`;
 
 export const allListings = `${auctionBase}/listings`;
 
-export const activeListings = `${allListings}?_active=true`;
-
 export const singleListing = `${allListings}/`;
 
-export const createListing = allListings; // POST
+export const createListing = allListings;
 
 export const allProfiles = `${auctionBase}/profiles`;
-
-export const singleProfile = (name) => `${allProfiles}/${name}`;

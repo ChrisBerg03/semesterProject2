@@ -1,10 +1,7 @@
 import { singleListing } from "../api/constants";
-import { navHeader } from "../ui/header";
+import { navHeader } from "./header";
+import { loggedIn } from "../api/headers";
 navHeader();
-
-document.getElementById("profileImg").src =
-    localStorage.getItem("avatar") ||
-    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541";
 
 const postId = sessionStorage.getItem("postId");
 const container = document.getElementById("container");
@@ -22,10 +19,34 @@ async function getData() {
 
 async function displayPost() {
     const post = await getData();
-    console.log(post);
-    if (!post || !post.media || !post.media.length) {
-        console.error("No media found in the post.");
+    if (!post) {
+        console.error("Failed to fetch the post data.");
         return;
+    }
+
+    const images =
+        post.media?.length > 0 ? post.media.map((item) => item.url) : [];
+    let currentIndex = 0;
+
+    const defaultImageUrl =
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1j2TtW91qg8IzXnJHaD4LoMC52eqO3ImgAQ&s";
+
+    function updateImage() {
+        const img = container.querySelector("img");
+
+        if (images.length > 0) {
+            img.src = images[currentIndex];
+            img.alt =
+                post.media[currentIndex]?.alt || `Image ${currentIndex + 1}`;
+            document.getElementById("imageCounter").textContent = `Image ${
+                currentIndex + 1
+            } of ${images.length}`;
+        } else {
+            img.src = defaultImageUrl;
+            img.alt = "Default image";
+            document.getElementById("imageCounter").textContent =
+                "No images available";
+        }
     }
 
     function formatTimestamp(timestamp) {
@@ -65,32 +86,33 @@ async function displayPost() {
         }
 
         const timerInterval = setInterval(updateTimer, 1000);
-        updateTimer(); // Run it immediately
-    }
-
-    const images = post.media.map((item) => item.url);
-    let currentIndex = 0;
-
-    function updateImage() {
-        const img = container.querySelector("img");
-        img.src = images[currentIndex];
-        img.alt = post.media[currentIndex].alt || `Image ${currentIndex + 1}`;
-
-        document.getElementById("imageCounter").textContent = `Image ${
-            currentIndex + 1
-        } of ${images.length}`;
+        updateTimer();
     }
 
     let bidContainer = "";
     if (localStorage.getItem("accessToken")) {
         bidContainer = `
-            <div class="mt-4">
-                <a href="../../bid/" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">Place Bid</a>
+        <div class="mt-4">
+            <button id="openBidInput" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200">
+                Place Bid
+            </button>
+            <div id="bidInputContainer" class="hidden mt-2">
+                <input
+                    type="number"
+                    id="bidAmount"
+                    placeholder="Enter your bid amount"
+                    class="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                />
+                <button id="submitBid" class="mt-2 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200">
+                    Submit Bid
+                </button>
             </div>
-        `;
+        </div>
+    `;
     }
+
     let highestBidInfo = `<p class="text-gray-700">No bids yet.</p>`;
-    if (post.bids.length > 0) {
+    if (post.bids?.length > 0) {
         const highestBid = post.bids.reduce(
             (max, bid) => (bid.amount > max.amount ? bid : max),
             post.bids[0]
@@ -108,20 +130,26 @@ async function displayPost() {
     container.innerHTML = `
         <div class="flex items-center justify-center space-x-4">
             <button id="left-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
-                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-blue-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <polygon points="15,3 3,12 15,21" />
                 </svg>
             </button>
             <div class="relative">
-                <img src="${images[0]}" alt="${
-        post.media[0].alt || "Image"
+                <img src="${
+                    images.length > 0 ? images[0] : defaultImageUrl
+                }" alt="${
+        post.media?.[0]?.alt || "Default image"
     }" class="w-[400px] sm:w-[500px] md:w-[600px] cursor-pointer" />
                 <p id="imageCounter" class="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-sm sm:text-base md:text-lg font-semibold bg-white px-2 py-1 rounded-md">
-                    Image 1 of ${images.length}
+                    ${
+                        images.length > 0
+                            ? `Image 1 of ${images.length}`
+                            : "No images available"
+                    }
                 </p>
             </div>
             <button id="right-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
-                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-blue-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 3 L21 12 L9 21 Z" />
                 </svg>
             </button>
@@ -142,55 +170,28 @@ async function displayPost() {
                     post._count?.bids || 0
                 }</div>
                         ${highestBidInfo}
-
-                
             </div>
             <div>
                 <p class="text-sm sm:text-base md:text-lg">${
                     post.description || "No description available"
                 }</p>
             </div>
+            ${bidContainer}
         </div>
-        ${bidContainer}
     `;
 
-    const timerElement = document.getElementById(`timer-${post.id}`);
-    createTimer(post.endsAt, timerElement);
+    createTimer(post.endsAt, document.getElementById(`timer-${post.id}`));
+    updateImage();
 
-    document.getElementById("left-button").addEventListener("click", () => {
+    container.querySelector("#left-button").addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
         updateImage();
     });
 
-    document.getElementById("right-button").addEventListener("click", () => {
+    container.querySelector("#right-button").addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % images.length;
         updateImage();
     });
-
-    updateImage();
 }
 
 displayPost();
-
-function openModal(imageUrl) {
-    const modal = document.getElementById("imageModal");
-    const modalImage = document.getElementById("modalImage");
-    modalImage.src = imageUrl;
-    modal.classList.remove("hidden");
-}
-
-// Attach openModal to the window object
-window.openModal = openModal;
-
-document.getElementById("closeModal").addEventListener("click", () => {
-    const modal = document.getElementById("imageModal");
-    modal.classList.add("hidden");
-});
-
-// Close modal when clicking outside the image
-document.getElementById("imageModal").addEventListener("click", (event) => {
-    if (event.target === document.getElementById("imageModal")) {
-        const modal = document.getElementById("imageModal");
-        modal.classList.add("hidden");
-    }
-});
