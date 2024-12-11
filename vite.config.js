@@ -5,7 +5,7 @@ import { resolve } from "path";
 export default defineConfig({
     assetsInclude: ["**/*.html"],
     plugins: [],
-    base: "/",
+    base: "./",
     build: {
         rollupOptions: {
             input: {
