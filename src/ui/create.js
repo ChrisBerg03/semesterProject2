@@ -47,7 +47,6 @@ document
             return;
         }
 
-        // Gather media entries
         const mediaElements = document.querySelectorAll(
             "#mediaFields .media-input"
         );

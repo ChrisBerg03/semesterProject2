@@ -14,6 +14,6 @@ export const allListings = `${auctionBase}/listings`;
 
 export const singleListing = `${allListings}/`;
 
-export const createListing = allListings; // POST
+export const createListing = allListings;
 
 export const allProfiles = `${auctionBase}/profiles`;

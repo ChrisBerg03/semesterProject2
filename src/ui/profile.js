@@ -24,7 +24,6 @@ async function getData() {
         }
 
         const data = await response.json();
-        console.log(data.data);
         return data.data;
     } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -94,7 +93,7 @@ function displayProfile(profile) {
                     }</h2>
                     <p class="text-sm text-gray-500">Credits</p>
                 </div>
-                <button id="editProfileBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                <button id="editProfileBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
                     Edit Profile
                 </button>
             </div>
@@ -116,7 +115,7 @@ function enableEditing(profile) {
         <form class="space-y-6 bg-white p-6 rounded-lg shadow-md w-full max-w-lg mx-auto">
             <div>
                 <label for="editBio" class="block text-sm font-medium text-gray-700">Bio</label>
-                <textarea id="editBio" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="4">${
+                <textarea id="editBio" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500" rows="4">${
                     profile.bio || ""
                 }</textarea>
             </div>
@@ -125,28 +124,28 @@ function enableEditing(profile) {
                 <label for="editAvatarUrl" class="block text-sm font-medium text-gray-700">Avatar URL</label>
                 <input id="editAvatarUrl" type="text" value="${
                     profile.avatar?.url || ""
-                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
             </div>
 
             <div class="mt-4">
                 <label for="editAvatarAlt" class="block text-sm font-medium text-gray-700">Avatar Alt</label>
                 <input id="editAvatarAlt" type="text" value="${
                     profile.avatar?.alt || ""
-                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
             </div>
 
             <div class="mt-4">
                 <label for="editBannerUrl" class="block text-sm font-medium text-gray-700">Banner URL</label>
                 <input id="editBannerUrl" type="text" value="${
                     profile.banner?.url || ""
-                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
             </div>
 
             <div class="mt-4">
                 <label for="editBannerAlt" class="block text-sm font-medium text-gray-700">Banner Alt</label>
                 <input id="editBannerAlt" type="text" value="${
                     profile.banner?.alt || ""
-                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                }" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
             </div>
 
             <div class="mt-6 flex justify-end space-x-4">
@@ -184,7 +183,6 @@ async function displayListings(profileName) {
         }
 
         const listings = await response.json();
-        console.log(listings); // Logs the entire response
 
         if (listings.data.length === 0) {
             profileContainer.innerHTML += `
@@ -217,7 +215,7 @@ async function displayListings(profileName) {
                         <p class="text-sm text-gray-500">Created: ${new Date(
                             listing.created
                         ).toLocaleDateString()}</p>
-<a class="redirectBtn bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 mt-4 cursor-pointer" data-id="${
+<a class="redirectBtn bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 mt-4 cursor-pointer" data-id="${
                     listing.id
                 }">
     View Details

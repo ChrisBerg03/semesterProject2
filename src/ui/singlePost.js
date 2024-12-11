@@ -19,9 +19,34 @@ async function getData() {
 
 async function displayPost() {
     const post = await getData();
-    if (!post || !post.media || !post.media.length) {
-        console.error("No media found in the post.");
+    if (!post) {
+        console.error("Failed to fetch the post data.");
         return;
+    }
+
+    const images =
+        post.media?.length > 0 ? post.media.map((item) => item.url) : [];
+    let currentIndex = 0;
+
+    const defaultImageUrl =
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1j2TtW91qg8IzXnJHaD4LoMC52eqO3ImgAQ&s";
+
+    function updateImage() {
+        const img = container.querySelector("img");
+
+        if (images.length > 0) {
+            img.src = images[currentIndex];
+            img.alt =
+                post.media[currentIndex]?.alt || `Image ${currentIndex + 1}`;
+            document.getElementById("imageCounter").textContent = `Image ${
+                currentIndex + 1
+            } of ${images.length}`;
+        } else {
+            img.src = defaultImageUrl;
+            img.alt = "Default image";
+            document.getElementById("imageCounter").textContent =
+                "No images available";
+        }
     }
 
     function formatTimestamp(timestamp) {
@@ -64,24 +89,11 @@ async function displayPost() {
         updateTimer();
     }
 
-    const images = post.media.map((item) => item.url);
-    let currentIndex = 0;
-
-    function updateImage() {
-        const img = container.querySelector("img");
-        img.src = images[currentIndex];
-        img.alt = post.media[currentIndex].alt || `Image ${currentIndex + 1}`;
-
-        document.getElementById("imageCounter").textContent = `Image ${
-            currentIndex + 1
-        } of ${images.length}`;
-    }
-
     let bidContainer = "";
     if (localStorage.getItem("accessToken")) {
         bidContainer = `
         <div class="mt-4">
-            <button id="openBidInput" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+            <button id="openBidInput" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200">
                 Place Bid
             </button>
             <div id="bidInputContainer" class="hidden mt-2">
@@ -100,7 +112,7 @@ async function displayPost() {
     }
 
     let highestBidInfo = `<p class="text-gray-700">No bids yet.</p>`;
-    if (post.bids.length > 0) {
+    if (post.bids?.length > 0) {
         const highestBid = post.bids.reduce(
             (max, bid) => (bid.amount > max.amount ? bid : max),
             post.bids[0]
@@ -115,31 +127,29 @@ async function displayPost() {
         `;
     }
 
-    const allBidsHtml = `
-        <button id="viewAllBids" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 mt-4">
-            View All Bids
-        </button>
-        <div id="allBidsContainer" class="hidden mt-4 bg-gray-100 p-4 rounded-lg">
-        </div>
-    `;
-
     container.innerHTML = `
         <div class="flex items-center justify-center space-x-4">
             <button id="left-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
-                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-blue-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <polygon points="15,3 3,12 15,21" />
                 </svg>
             </button>
             <div class="relative">
-                <img src="${images[0]}" alt="${
-        post.media[0].alt || "Image"
+                <img src="${
+                    images.length > 0 ? images[0] : defaultImageUrl
+                }" alt="${
+        post.media?.[0]?.alt || "Default image"
     }" class="w-[400px] sm:w-[500px] md:w-[600px] cursor-pointer" />
                 <p id="imageCounter" class="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-sm sm:text-base md:text-lg font-semibold bg-white px-2 py-1 rounded-md">
-                    Image 1 of ${images.length}
+                    ${
+                        images.length > 0
+                            ? `Image 1 of ${images.length}`
+                            : "No images available"
+                    }
                 </p>
             </div>
             <button id="right-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
-                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-blue-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 3 L21 12 L9 21 Z" />
                 </svg>
             </button>
@@ -166,43 +176,9 @@ async function displayPost() {
                     post.description || "No description available"
                 }</p>
             </div>
-            ${allBidsHtml}
+            ${bidContainer}
         </div>
-        ${bidContainer}
-
     `;
-
-    document.getElementById("openBidInput")?.addEventListener("click", () => {
-        const bidInputContainer = document.getElementById("bidInputContainer");
-        bidInputContainer.classList.toggle("hidden");
-    });
-
-    document.getElementById("viewAllBids")?.addEventListener("click", () => {
-        const allBidsContainer = document.getElementById("allBidsContainer");
-        if (allBidsContainer.classList.contains("hidden")) {
-            const bidsHtml = post.bids
-                .map(
-                    (bid) => `
-                        <div class="border-b border-gray-300 py-2">
-                            <p><span class="font-semibold">Bidder:</span> ${
-                                bid.bidder.name
-                            }</p>
-                            <p><span class="font-semibold">Amount:</span> ${
-                                bid.amount
-                            }kr</p>
-                            <p><span class="font-semibold">Time:</span> ${formatTimestamp(
-                                bid.created
-                            )}</p>
-                        </div>
-                    `
-                )
-                .join("");
-            allBidsContainer.innerHTML = bidsHtml || "<p>No bids yet.</p>";
-            allBidsContainer.classList.remove("hidden");
-        } else {
-            allBidsContainer.classList.add("hidden");
-        }
-    });
 
     createTimer(post.endsAt, document.getElementById(`timer-${post.id}`));
     updateImage();

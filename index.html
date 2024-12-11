@@ -77,6 +77,27 @@
                         </div>
                     </div>
 
+                    <div class="flex-grow mx-4 hidden sm:block">
+                        <form
+                            action="javascript:void(0)"
+                            method="GET"
+                            class="relative"
+                        >
+                            <input
+                                type="text"
+                                name="query"
+                                class="searchInput w-full px-4 py-2 rounded-md text-sm bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                                placeholder="Search..."
+                            />
+                            <button
+                                type="submit"
+                                class="submitSearchBtn absolute right-1 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white rounded-md px-3 py-1 hover:bg-gray-600 focus:outline-none"
+                            >
+                                Search
+                            </button>
+                        </form>
+                    </div>
+
                     <div
                         class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
                     >
@@ -153,6 +174,24 @@
                         class="block rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 duration-500 transition-all"
                         >Create Listing</a
                     >
+                    <form
+                        action="javascript:void(0)"
+                        method="GET"
+                        class="relative mt-2"
+                    >
+                        <input
+                            type="text"
+                            name="query"
+                            class="searchInput w-full px-4 py-2 rounded-md text-sm bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            placeholder="Search..."
+                        />
+                        <button
+                            type="submit"
+                            class="submitSearchBtn absolute right-1 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white rounded-md px-3 py-1 hover:bg-gray-600 focus:outline-none"
+                        >
+                            Search
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -161,7 +200,21 @@
                 id="postsContainer"
                 class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             ></div>
+            <div class="flex justify-center items-center mt-4">
+                <button
+                    id="prevPageBtn"
+                    class="mr-4 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
+                    disabled
+                >
+                    Previous
+                </button>
+                <button
+                    id="nextPageBtn"
+                    class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                >
+                    Next
+                </button>
+            </div>
         </main>
-        <footer></footer>
     </body>
 </html>
