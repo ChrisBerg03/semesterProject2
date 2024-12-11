@@ -3,9 +3,10 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 
 export default defineConfig({
+    appType: "mpa",
     assetsInclude: ["**/*.html"],
     plugins: [],
-    base: "/",
+    base: "",
     build: {
         rollupOptions: {
             input: {
