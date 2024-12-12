@@ -4,7 +4,6 @@ import { resolve } from "path";
 
 export default defineConfig({
     appType: "mpa",
-    assetsInclude: ["**/*.html"],
     plugins: [],
     base: "",
     build: {
