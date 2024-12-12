@@ -10,7 +10,6 @@
         <div
             class="bg-white shadow-md rounded-lg p-8 max-w-md w-full mx-4 relative overflow-hidden"
         >
-            <!-- Toggle button -->
             <button
                 id="toggleFormBtn"
                 class="absolute top-4 right-4 text-gray-500 font-semibold hover:text-gray-600 transition"
@@ -20,7 +19,6 @@
 
             <!-- Forms Wrapper -->
             <div id="formsWrapper" class="transition duration-500">
-                <!-- Registration Form -->
                 <div id="registerForm">
                     <h2 class="text-2xl font-semibold text-gray-700 text-center mb-6">Register</h2>
                     <form>
@@ -35,19 +33,19 @@
                                 required
                             />
                         </div>
-            
+
                         <div class="mb-4">
-                            <label for="email" class="block text-sm text-gray-600 mb-1">Email</label>
+                            <label for="registerEmail" class="block text-sm text-gray-600 mb-1">Email</label>
                             <input
                                 type="email"
-                                id="email"
+                                id="registerEmail"
                                 name="email"
                                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
                                 placeholder="john@example.com"
                                 required
                             />
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="password" class="block text-sm text-gray-600 mb-1">Password</label>
                             <input
@@ -59,7 +57,7 @@
                                 required
                             />
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="bio" class="block text-sm text-gray-600 mb-1">Bio</label>
                             <textarea
@@ -69,7 +67,7 @@
                                 placeholder="Something about yourself"
                             ></textarea>
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="avatarUrl" class="block text-sm text-gray-600 mb-1">Avatar URL</label>
                             <input
@@ -80,7 +78,7 @@
                                 placeholder="https://example.com/avatar.jpg"
                             />
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="bannerUrl" class="block text-sm text-gray-600 mb-1">Banner URL</label>
                             <input
@@ -92,7 +90,6 @@
                             />
                         </div>
 
-            
                         <button
                             type="submit"
                             class="w-full bg-gray-500 text-white font-semibold py-2 rounded-lg hover:bg-gray-600 transition duration-200"
@@ -104,7 +101,6 @@
             </div>
             
 
-                <!-- Login Form (hidden by def) -->
                 <div id="loginForm" class="hidden">
                     <h2
                         class="text-2xl font-semibold text-gray-700 text-center mb-6"

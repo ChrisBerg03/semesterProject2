@@ -22,13 +22,12 @@ registerForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("registerEmail").value;
     const password = document.getElementById("password").value;
     const bio = document.getElementById("bio").value;
     const avatarUrl = document.getElementById("avatarUrl").value;
     const bannerUrl = document.getElementById("bannerUrl").value;
 
-    // Validate email
     if (!validNoroffEmail(email)) {
         alert("Email must end with @stud.noroff.no");
         return;
@@ -60,7 +59,7 @@ registerForm.addEventListener("submit", (event) => {
 loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("password").value;
 
     if (!validNoroffEmail(email)) {
