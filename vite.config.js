@@ -8,6 +8,7 @@ export default defineConfig({
     plugins: [],
     base: "",
     build: {
+        target: ["esnext"],
         rollupOptions: {
             input: {
                 index: resolve(__dirname, "./index.html"),
