@@ -34,12 +34,12 @@ registerForm.addEventListener("submit", (event) => {
     }
 
     const registrationData = {
-        name: name,
-        email: email,
-        password: password,
+        name,
+        email,
+        password,
         bio: bio || undefined,
-        avatar: avatarUrl ? { url: avatarUrl || "" } : undefined,
-        banner: bannerUrl ? { url: bannerUrl || "" } : undefined,
+        avatar: avatarUrl || undefined,
+        banner: bannerUrl || undefined,
     };
 
     fetch(registerUrl, {
@@ -49,8 +49,15 @@ registerForm.addEventListener("submit", (event) => {
         },
         body: JSON.stringify(registrationData),
     })
-        .then((response) => response.json())
-        .then((data) => {})
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Registration successful:", data);
+        })
         .catch((error) => {
             console.error("Error:", error);
         });
@@ -60,7 +67,7 @@ loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("password").value;
+    const password = document.getElementById("loginPassword").value;
 
     if (!validNoroffEmail(email)) {
         alert("Email must end with @stud.noroff.no");
@@ -68,8 +75,8 @@ loginForm.addEventListener("submit", (event) => {
     }
 
     const loginData = {
-        email: email,
-        password: password,
+        email,
+        password,
     };
 
     fetch(loginUrl, {
@@ -79,13 +86,18 @@ loginForm.addEventListener("submit", (event) => {
         },
         body: JSON.stringify(loginData),
     })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data) => {
             localStorage.setItem("name", data.data.name);
             localStorage.setItem("bio", data.data.bio);
             localStorage.setItem("accessToken", data.data.accessToken);
-            localStorage.setItem("avatar", data.data.avatar.url);
-            localStorage.setItem("banner", data.data.banner.url);
+            localStorage.setItem("avatar", data.data.avatar?.url || "");
+            localStorage.setItem("banner", data.data.banner?.url || "");
             window.location.href = "/";
         })
         .catch((error) => {
