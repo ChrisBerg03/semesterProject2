@@ -209,6 +209,35 @@ async function displayPost() {
     </div>
 `;
 
+    document.getElementById("submitBid").addEventListener("click", async () => {
+        const bidAmount = parseFloat(
+            document.getElementById("bidAmount").value
+        );
+
+        if (isNaN(bidAmount) || bidAmount <= 0) {
+            alert("Please enter a valid bid amount.");
+            return;
+        }
+
+        try {
+            const myHeaders = await loggedIn();
+            const response = await fetch(`${singleListing}${postId}/bids`, {
+                method: "POST",
+                headers: myHeaders,
+                body: JSON.stringify({ amount: bidAmount }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to place bid. Please try again.");
+            }
+
+            alert("Bid placed successfully!");
+            displayPost();
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
     createTimer(post.endsAt, document.getElementById(`timer-${post.id}`));
     updateImage();
 
@@ -218,6 +247,11 @@ async function displayPost() {
 
     document.getElementById("closeBidsModal").addEventListener("click", () => {
         document.getElementById("bidsModal").classList.add("hidden");
+    });
+
+    document.getElementById("openBidInput").addEventListener("click", () => {
+        const bidInputContainer = document.getElementById("bidInputContainer");
+        bidInputContainer.classList.toggle("hidden");
     });
 
     container.querySelector("#left-button").addEventListener("click", () => {
