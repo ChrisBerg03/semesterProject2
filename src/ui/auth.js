@@ -13,6 +13,7 @@ toggleFormBtn.addEventListener("click", () => {
         ? "Switch to Login"
         : "Switch to Register";
 });
+
 const validNoroffEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@stud\.noroff\.no$/;
     return emailRegex.test(email);
@@ -37,10 +38,12 @@ registerForm.addEventListener("submit", (event) => {
         name,
         email,
         password,
-        bio: bio || undefined,
-        avatar: avatarUrl || undefined,
-        banner: bannerUrl || undefined,
+        bio: bio || "",
+        avatar: avatarUrl ? { url: avatarUrl } : null,
+        banner: bannerUrl ? { url: bannerUrl } : null,
     };
+
+    console.log("Registration data:", registrationData);
 
     fetch(registerUrl, {
         method: "POST",
@@ -51,15 +54,21 @@ registerForm.addEventListener("submit", (event) => {
     })
         .then((response) => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json().then((err) => {
+                    console.error("Error response:", err);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                });
             }
             return response.json();
         })
         .then((data) => {
             console.log("Registration successful:", data);
+            alert("Registration Successful");
+            window.location.href = "/";
         })
         .catch((error) => {
             console.error("Error:", error);
+            alert("Registration failed. Please try again.");
         });
 });
 
@@ -78,6 +87,8 @@ loginForm.addEventListener("submit", (event) => {
         email,
         password,
     };
+
+    console.log("Login data:", loginData);
 
     fetch(loginUrl, {
         method: "POST",
@@ -102,5 +113,6 @@ loginForm.addEventListener("submit", (event) => {
         })
         .catch((error) => {
             console.error("Error:", error);
+            alert("Login failed. Please try again.");
         });
 });

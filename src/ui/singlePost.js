@@ -91,7 +91,7 @@ async function displayPost() {
 
     let bidContainer = "";
     if (localStorage.getItem("accessToken")) {
-        bidContainer = `
+        bidContainer = ` 
         <div class="mt-4">
             <button id="openBidInput" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200">
                 Place Bid
@@ -108,6 +108,12 @@ async function displayPost() {
                 </button>
             </div>
         </div>
+    `;
+    } else {
+        bidContainer = `
+        <p class="text-gray-700 font-medium mt-4">
+            You must be logged in to place a bid.
+        </p>
     `;
     }
 
@@ -144,7 +150,7 @@ async function displayPost() {
 
     container.innerHTML = `
     <div class="flex items-center justify-center space-x-4">
-        <button id="left-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
+                <button id="left-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
             <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <polygon points="15,3 3,12 15,21" />
             </svg>
@@ -209,37 +215,58 @@ async function displayPost() {
     </div>
 `;
 
-    document.getElementById("submitBid").addEventListener("click", async () => {
-        const bidAmount = parseFloat(
-            document.getElementById("bidAmount").value
-        );
+    const openBidInputButton = document.getElementById("openBidInput");
+    if (openBidInputButton) {
+        openBidInputButton.addEventListener("click", () => {
+            const bidInputContainer =
+                document.getElementById("bidInputContainer");
+            bidInputContainer.classList.toggle("hidden");
+        });
+    }
 
-        if (isNaN(bidAmount) || bidAmount <= 0) {
-            alert("Please enter a valid bid amount.");
-            return;
-        }
+    document
+        .getElementById("submitBid")
+        ?.addEventListener("click", async () => {
+            const bidAmount = parseFloat(
+                document.getElementById("bidAmount").value
+            );
 
-        try {
-            const myHeaders = await loggedIn();
-            const response = await fetch(`${singleListing}${postId}/bids`, {
-                method: "POST",
-                headers: myHeaders,
-                body: JSON.stringify({ amount: bidAmount }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to place bid. Please try again.");
+            if (isNaN(bidAmount) || bidAmount <= 0) {
+                alert("Please enter a valid bid amount.");
+                return;
             }
 
-            alert("Bid placed successfully!");
-            displayPost();
-        } catch (error) {
-            alert(error.message);
-        }
-    });
+            try {
+                const myHeaders = await loggedIn();
+                const response = await fetch(`${singleListing}${postId}/bids`, {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify({ amount: bidAmount }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to place bid. Please try again.");
+                }
+
+                alert("Bid placed successfully!");
+                displayPost();
+            } catch (error) {
+                alert(error.message);
+            }
+        });
 
     createTimer(post.endsAt, document.getElementById(`timer-${post.id}`));
     updateImage();
+
+    document.getElementById("left-button").addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateImage();
+    });
+
+    document.getElementById("right-button").addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateImage();
+    });
 
     document.getElementById("viewAllBids").addEventListener("click", () => {
         document.getElementById("bidsModal").classList.remove("hidden");
@@ -247,21 +274,6 @@ async function displayPost() {
 
     document.getElementById("closeBidsModal").addEventListener("click", () => {
         document.getElementById("bidsModal").classList.add("hidden");
-    });
-
-    document.getElementById("openBidInput").addEventListener("click", () => {
-        const bidInputContainer = document.getElementById("bidInputContainer");
-        bidInputContainer.classList.toggle("hidden");
-    });
-
-    container.querySelector("#left-button").addEventListener("click", () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        updateImage();
-    });
-
-    container.querySelector("#right-button").addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        updateImage();
     });
 }
 
