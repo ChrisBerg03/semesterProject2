@@ -17,7 +17,7 @@ This application features all of these tasks and have been styles acordingly wit
 ### Project timeline
 ![image](https://github.com/user-attachments/assets/1dd04cfb-e698-4d40-bead-6fef3b88d53e)
 
-### https://splendid-toffee-ea8c02.netlify.app/
+### deployed website https://splendid-toffee-ea8c02.netlify.app/
 
 <hr/>
 ## functionality
