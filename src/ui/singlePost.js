@@ -127,61 +127,98 @@ async function displayPost() {
         `;
     }
 
+    let allBids = "<p class='text-gray-700'>No bids yet.</p>";
+    if (post.bids?.length > 0) {
+        allBids = post.bids
+            .map(
+                (bid) => `
+            <p class='text-gray-600'>
+                Bidder: <span class='font-semibold'>${bid.bidder.name}</span> - 
+                Amount: <span class='font-semibold'>${bid.amount}kr</span> - 
+                Time: ${formatTimestamp(bid.timestamp)}
+            </p>
+        `
+            )
+            .join("");
+    }
+
     container.innerHTML = `
-        <div class="flex items-center justify-center space-x-4">
-            <button id="left-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
-                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="15,3 3,12 15,21" />
-                </svg>
-            </button>
-            <div class="relative">
-                <img src="${
-                    images.length > 0 ? images[0] : defaultImageUrl
-                }" alt="${
+    <div class="flex items-center justify-center space-x-4">
+        <button id="left-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
+            <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="15,3 3,12 15,21" />
+            </svg>
+        </button>
+        <div class="relative">
+            <img src="${
+                images.length > 0 ? images[0] : defaultImageUrl
+            }" alt="${
         post.media?.[0]?.alt || "Default image"
     }" class="w-[400px] sm:w-[500px] md:w-[600px] cursor-pointer" />
-                <p id="imageCounter" class="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-sm sm:text-base md:text-lg font-semibold bg-white px-2 py-1 rounded-md">
-                    ${
-                        images.length > 0
-                            ? `Image 1 of ${images.length}`
-                            : "No images available"
-                    }
-                </p>
-            </div>
-            <button id="right-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
-                <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 3 L21 12 L9 21 Z" />
-                </svg>
-            </button>
+            <p id="imageCounter" class="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-sm sm:text-base md:text-lg font-semibold bg-white px-2 py-1 rounded-md">
+                ${
+                    images.length > 0
+                        ? `Image 1 of ${images.length}`
+                        : "No images available"
+                }
+            </p>
         </div>
-        <div class="w-3/6 flex flex-col justify-center">
-            <div class="text-lg sm:text-xl md:text-2xl">${post.title}</div>
-            <div>
-                <div class="text-sm sm:text-base md:text-lg">Created at: ${formatTimestamp(
-                    post.created
-                )}</div>
-                <p class="text-gray-600 text-sm sm:text-base md:text-lg mb-4" id="timer-${
-                    post.id
-                }"></p>
-                <div class="text-sm sm:text-base md:text-lg">Tags: ${
-                    post.tags ? post.tags.join(", ") : "No tags available"
-                }</div>
-                <div class="text-sm sm:text-base md:text-lg">Amount of bids: ${
-                    post._count?.bids || 0
-                }</div>
-                        ${highestBidInfo}
-            </div>
-            <div>
-                <p class="text-sm sm:text-base md:text-lg">${
-                    post.description || "No description available"
-                }</p>
+        <button id="right-button" class="bg-transparent hover:bg-gray-200 p-2 rounded-full m-0">
+            <svg class="w-8 h-8 sm:w-12 sm:h-12 fill-black hover:fill-gray-500 transition-transform transform hover:scale-110" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3 L21 12 L9 21 Z" />
+            </svg>
+        </button>
+    </div>
+    <div class="w-3/6 flex flex-col justify-center">
+        <div class="text-lg sm:text-xl md:text-2xl">${post.title}</div>
+        <div>
+            <div class="text-sm sm:text-base md:text-lg">Created at: ${formatTimestamp(
+                post.created
+            )}</div>
+            <p class="text-gray-600 text-sm sm:text-base md:text-lg mb-4" id="timer-${
+                post.id
+            }"></p>
+            <div class="text-sm sm:text-base md:text-lg">Tags: ${
+                post.tags ? post.tags.join(", ") : "No tags available"
+            }</div>
+            <div class="text-sm sm:text-base md:text-lg">Amount of bids: ${
+                post._count?.bids || 0
+            }</div>
+                    ${highestBidInfo}
+        </div>
+        <div>
+        <p class="text-sm sm:text-base md:text-lg">${
+            post.description || "No description available"
+        }</p>
             </div>
             ${bidContainer}
-        </div>
-    `;
+            <div>
+                <button id="viewAllBids" class="mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+                    View All Bids
+                </button>
+                <div id="bidsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div class="bg-white p-4 rounded-lg w-3/4 max-h-[80%] overflow-y-auto">
+                        <h2 class="text-lg sm:text-xl font-semibold mb-4">All Bids</h2>
+                        <div>${allBids}</div>
+                        <button id="closeBidsModal" class="mt-4 bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </div>
+`;
 
     createTimer(post.endsAt, document.getElementById(`timer-${post.id}`));
     updateImage();
+
+    document.getElementById("viewAllBids").addEventListener("click", () => {
+        document.getElementById("bidsModal").classList.remove("hidden");
+    });
+
+    document.getElementById("closeBidsModal").addEventListener("click", () => {
+        document.getElementById("bidsModal").classList.add("hidden");
+    });
 
     container.querySelector("#left-button").addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
