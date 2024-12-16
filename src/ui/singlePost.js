@@ -140,8 +140,7 @@ async function displayPost() {
                 (bid) => `
             <p class='text-gray-600'>
                 Bidder: <span class='font-semibold'>${bid.bidder.name}</span> - 
-                Amount: <span class='font-semibold'>${bid.amount}kr</span> - 
-                Time: ${formatTimestamp(bid.timestamp)}
+                Amount: <span class='font-semibold'>${bid.amount}kr</span>
             </p>
         `
             )
