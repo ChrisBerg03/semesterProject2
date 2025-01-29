@@ -141,7 +141,7 @@ document.querySelectorAll(".submitSearchBtn").forEach((button) => {
 
         try {
             const response = await fetch(
-                `https://v2.api.noroff.dev/social/posts/search?q=${encodeURIComponent(
+                `https://v2.api.noroff.dev/auction/listings/search?q=${encodeURIComponent(
                     searchInput
                 )}`,
                 {
